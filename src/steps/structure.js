@@ -97,10 +97,11 @@ Your primary goal is to write robust, strictly-typed, and perfectly structured c
 2. **Zoneless & Reactivity.** This uses Zoneless Angular. UI will NOT update unless a Signal is mutated. Use Signals for state, RxJS for async, bridge with \`toSignal()\`.
 3. **Structural Isolation.** \`ui/\` (dumb), \`features/\` (smart), \`schema/\` (types), \`infrastructure/\` (external/DOM).
 4. **Anti-Corruption Layer.** Never import third-party directly into ui/ or features/. Wrap them in infrastructure/.
-5. **Semantic Naming.** Vague names (data, info, handle) are forbidden.
-6. **No app.component.ts Logic.** Do NOT implement applications features, UI, or business logic directly in \`app.component.ts\`. It MUST serve only as a root shell (e.g., containing \`<router-outlet>\`). Create proper components inside \`ui/\` or \`features/\` instead.
+    5. **Semantic Naming.** Vague names (data, info, handle) are forbidden.
+    6. **No app.component.ts Logic.** Do NOT implement applications features, UI, or business logic directly in \`app.component.ts\`. It MUST serve only as a root shell (e.g., containing \`<router-outlet>\`). Create proper components inside \`ui/\` or \`features/\` instead.
+    7. **Test-Driven AI.** You MUST create tests concurrently with any implementation. Upon completing an implementation, you MUST ALWAYS run the tests to verify your changes.
 
-## **📚 Skill References**
+    ## **📚 Skill References**
 Refer to the detailed skill files located in \`.agent/skills/\`.
 Always prioritize these local instructions over your general Angular knowledge.
 `;
@@ -120,6 +121,7 @@ Always prioritize these local instructions over your general Angular knowledge.
 2. **Inputs/Outputs:** \`@Input()\` and \`@Output()\` decorators are FORBIDDEN. Use Signal \`input()\` and \`output()\`.
 3. **UI Components (\`ui/\`):** Dumb. Only simple formatting. No services.
 4. **Feature Components (\`features/\`):** Smart. Max 20 lines per method. Inject services.
+5. **Separate HTML Templates:** The HTML template MUST be created in a separate \`.html\` file (using \`templateUrl\`), NOT inline as a string in the \`@Component\` decorator.
 `);
 
   fs.writeFileSync(path.join(agentSkillsDir, '03-state-and-rxjs.md'), `# State and RxJS
@@ -142,5 +144,11 @@ Always prioritize these local instructions over your general Angular knowledge.
 - Atomic Commits.
 - Conventional Commits notation (\`feat:\`, \`fix:\`, etc).
 - Run Prettier. Pre-commit hooks will block bad code.
+`);
+
+  fs.writeFileSync(path.join(agentSkillsDir, '06-testing.md'), `# Testing Rules
+- You MUST create tests concurrently with the implementation.
+- You MUST explicitly execute the tests and ensure they pass whenever an implementation is completed.
+- Implementation is NOT complete until tests are written and passing.
 `);
 }
