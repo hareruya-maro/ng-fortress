@@ -1,0 +1,17 @@
+# NPM Ignore List
+
+# Ignore local tests and configurations
+test-app/
+.agent/
+.gemini/
+.vscode/
+
+# Build artifacts and logs
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Prototypes and spec files
+*.md
+!README.md
+docs/

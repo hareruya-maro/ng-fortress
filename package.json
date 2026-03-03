@@ -1,0 +1,44 @@
+{
+  "name": "create-ng-fortress",
+  "version": "1.0.0",
+  "description": "An AI-Native, Zero-Tolerance Strict Web Framework CLI for Angular.",
+  "main": "bin/create-ng-fortress.js",
+  "bin": {
+    "create-ng-fortress": "./bin/create-ng-fortress.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node ./bin/create-ng-fortress.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hareruya-maro/ng-fortress.git"
+  },
+  "keywords": [
+    "angular",
+    "cli",
+    "create-ng-fortress",
+    "zoneless",
+    "ai-native",
+    "strict",
+    "framework"
+  ],
+  "author": "hareruya-maro",
+  "license": "MIT",
+  "files": [
+    "bin",
+    "src"
+  ],
+  "bugs": {
+    "url": "https://github.com/hareruya-maro/ng-fortress/issues"
+  },
+  "homepage": "https://github.com/hareruya-maro/ng-fortress#readme",
+  "dependencies": {
+    "@inquirer/prompts": "^8.3.0",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "fs-extra": "^11.3.3",
+    "ora": "^9.3.0"
+  }
+}
