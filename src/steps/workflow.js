@@ -47,7 +47,7 @@ console.log('🛡️  NG Fortress Pre-build Validation Started');
 // 1. Check Directory Violations
 const appDir = path.join(process.cwd(), 'src/app');
 if (fs.existsSync(appDir)) {
-    const allowed = ['ui', 'features', 'infrastructure', 'schema', 'app.component.ts', 'app.config.ts', 'app.routes.ts'];
+    const allowed = ['ui', 'features', 'infrastructure', 'schema', 'app.component.ts', 'app.component.spec.ts', 'app.config.ts', 'app.routes.ts', 'app.config.server.ts', 'app.routes.server.ts'];
     const items = fs.readdirSync(appDir);
     items.forEach(item => {
         if (!allowed.includes(item)) {

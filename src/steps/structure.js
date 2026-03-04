@@ -9,8 +9,11 @@ export async function setupDirStructureAndAgents(projectPath) {
   const appDir = path.join(projectPath, 'src/app');
   fs.ensureDirSync(path.join(appDir, 'ui'));
   fs.ensureDirSync(path.join(appDir, 'features'));
-  fs.ensureDirSync(path.join(appDir, 'infrastructure'));
+  fs.ensureDirSync(path.join(appDir, 'infrastructure/browser'));
+  fs.ensureDirSync(path.join(appDir, 'infrastructure/server'));
+  fs.ensureDirSync(path.join(appDir, 'infrastructure/universal'));
   fs.ensureDirSync(path.join(appDir, 'schema'));
+  fs.ensureDirSync(path.join(appDir, 'schema/tokens'));
 
   // 2. Remove default app component and create a strict standalone one
   const appComponentFiles = [
@@ -111,8 +114,9 @@ Always prioritize these local instructions over your general Angular knowledge.
   fs.ensureDirSync(agentSkillsDir);
 
   fs.writeFileSync(path.join(agentSkillsDir, '01-architecture.md'), `# Architecture Rules
-- Application code must be strictly inside \`src/app/ui/\`, \`src/app/features/\`, \`src/app/infrastructure/\`, or \`src/app/schema/\`.
-- Dependency flow: \`ui/\` -> \`features/\` -> \`infrastructure/\` & \`schema/\`. Reverse flow is forbidden.
+- Application code must be strictly inside \`src/app/ui/\`, \`src/app/features/\`, \`src/app/infrastructure/\` (browser, server, universal), or \`src/app/schema/\`.
+- Dependency flow: \`ui/\` -> \`features/\` -> \`infrastructure/universal\` & \`schema/\`. Reverse flow is forbidden.
+- \`features/\` MUST NOT import directly from \`infrastructure/browser\` or \`infrastructure/server\`. Use Schema Tokens for injection.
 `);
 
   fs.writeFileSync(path.join(agentSkillsDir, '02-component-creation.md'), `# Component Creation Skill
@@ -132,6 +136,8 @@ Always prioritize these local instructions over your general Angular knowledge.
 `);
 
   fs.writeFileSync(path.join(agentSkillsDir, '04-infrastructure.md'), `# Infrastructure Layer
+- Layer is split into \`browser/\` (DOM, window), \`server/\` (Node.js API), and \`universal/\` (e.g. HttpClient).
+- \`browser/\` and \`server/\` must never import each other.
 - External libraries MUST be wrapped in a service here.
 - Do NOT expose external types. Map them to \`schema/\` types.
 - Convert callbacks/Promises to RxJS Observables.
@@ -150,5 +156,12 @@ Always prioritize these local instructions over your general Angular knowledge.
 - You MUST create tests concurrently with the implementation.
 - You MUST explicitly execute the tests and ensure they pass whenever an implementation is completed.
 - Implementation is NOT complete until tests are written and passing.
+`);
+
+  fs.writeFileSync(path.join(agentSkillsDir, '07-ssr-rules.md'), `# SSR Rules (Server-Side Rendering)
+1. NO Global Access: NEVER use \`window\`, \`document\`, \`localStorage\`, \`navigator\` directly in components or features.
+2. Injection Tokens: For browser/server-specific features, define an \`InjectionToken\` and interface in \`schema/tokens/\`. Implement in \`infrastructure/browser/\` and \`infrastructure/server/\`, then provide them in \`app.config.ts\` / \`app.config.server.ts\`.
+3. Safe Lifecycle hooks: DOM manipulation MUST be placed inside \`afterNextRender()\` or \`afterRender()\`.
+4. Hydration Mismatch: DO NOT use \`Math.random()\` or \`new Date()\` directly in templates.
 `);
 }

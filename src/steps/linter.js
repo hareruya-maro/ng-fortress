@@ -79,7 +79,9 @@ export default tseslint.config(
       'boundaries/elements': [
         { type: 'ui', pattern: 'src/app/ui/**/*' },
         { type: 'features', pattern: 'src/app/features/**/*' },
-        { type: 'infrastructure', pattern: 'src/app/infrastructure/**/*' },
+        { type: 'infrastructure/browser', pattern: 'src/app/infrastructure/browser/**/*' },
+        { type: 'infrastructure/server', pattern: 'src/app/infrastructure/server/**/*' },
+        { type: 'infrastructure/universal', pattern: 'src/app/infrastructure/universal/**/*' },
         { type: 'schema', pattern: 'src/app/schema/**/*' }
       ],
       'boundaries/include': ['src/app/**/*']
@@ -91,15 +93,24 @@ export default tseslint.config(
       'boundaries/element-types': ['error', {
         default: 'disallow',
         rules: [
-          { from: 'ui', allow: ['ui'] }, // ui can import from ui? usually no logic allowed, but basic types OK. Wait, schema shouldn't be imported by UI? Actually Schema is fine for inputs. Let's allow schema.
-          { from: 'ui', allow: ['schema'] },
-          { from: 'features', allow: ['ui', 'features', 'infrastructure', 'schema'] }, 
-          // Infrastructure is dependency inversion: features know about infrastructure interfaces? 
-          // Wait, typically features shouldn't know infra directly, they should know schema. But for simplicity, features can call infra services.
-          // Spec says: features -> infrastructure, schema is allowed.
-          { from: 'infrastructure', allow: ['schema', 'infrastructure'] }, // Infrastructure cannot import features or ui!
+          { from: 'ui', allow: ['ui', 'schema'] },
+          { from: 'features', allow: ['ui', 'features', 'schema', 'infrastructure/universal'] },
+          { from: 'features', disallow: ['infrastructure/browser', 'infrastructure/server'] },
+          { from: 'infrastructure/browser', allow: ['schema', 'infrastructure/browser', 'infrastructure/universal'] },
+          { from: 'infrastructure/server', allow: ['schema', 'infrastructure/server', 'infrastructure/universal'] },
+          { from: 'infrastructure/universal', allow: ['schema', 'infrastructure/universal'] },
+          { from: 'infrastructure/browser', disallow: ['infrastructure/server'] },
+          { from: 'infrastructure/server', disallow: ['infrastructure/browser'] }
         ]
       }],
+      // SSR specific globals ban
+      'no-restricted-globals': [
+        'error',
+        { name: 'window', message: 'NG Fortress [SSR]: Direct window access is strictly forbidden. Use InjectionToken.' },
+        { name: 'document', message: 'NG Fortress [SSR]: Inject DOCUMENT from @angular/common instead.' },
+        { name: 'localStorage', message: 'NG Fortress [SSR]: Wrap in infrastructure/browser/ and use InjectionToken.' },
+        { name: 'navigator', message: 'NG Fortress [SSR]: Direct navigator access is strictly forbidden. Use InjectionToken.' }
+      ],
       // Ban specific names
       'id-denylist': ['error', 'data', 'info', 'obj', 'res', 'handle', 'item'],
       // Functional strictness
