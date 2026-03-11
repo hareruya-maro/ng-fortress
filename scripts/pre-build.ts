@@ -35,9 +35,9 @@ if (fs.existsSync(assetsDir)) {
 	const allowedExtensions = [".png", ".jpg", ".jpeg", ".svg", ".webp"];
 	const maxSizeBytes = 500 * 1024; // 500KB
 
-	function checkDir(dir) {
+	function checkDir(dir: string): void {
 		const files = fs.readdirSync(dir);
-		files.forEach((file) => {
+		files.forEach((file: string) => {
 			const fullPath = path.join(dir, file);
 			const stat = fs.statSync(fullPath);
 			if (stat.isDirectory()) {
