@@ -13,24 +13,31 @@ export async function setupZoneless(projectPath: string) {
 		// Remove provideZoneChangeDetection import and setup
 		content = content.replace(/provideZoneChangeDetection\s*(?:,\s*)?/g, "");
 		content = content.replace(
-			/import\s*{\s*([^}]*?)\s*}\s*from\s*'@angular\/core';/,
-			(_match: string, group1: string) => {
+			/import\s*{\s*([^}]*?)\s*}\s*from\s*(['"])@angular\/core\2;/,
+			(_match: string, group1: string, quote: string) => {
 				const imports = group1
 					.split(",")
 					.map((s: string) => s.trim())
-					.filter((s: string) => s !== "provideZoneChangeDetection");
+					.filter(
+						(s: string) => s !== "" && s !== "provideZoneChangeDetection",
+					);
 				if (!imports.includes("provideZonelessChangeDetection")) {
 					imports.push("provideZonelessChangeDetection");
 				}
-				return `import { ${imports.join(", ")} } from '@angular/core';`;
+				return `import { ${imports.join(", ")} } from ${quote}@angular/core${quote};`;
 			},
 		);
 
-		// Add provideZonelessChangeDetection()
-		content = content.replace(
-			/providers:\s*\[/,
-			"providers: [\n    provideZonelessChangeDetection(),",
-		);
+		// Add provideZonelessChangeDetection() only if we find the providers array
+		// and it doesn't already have it
+		if (content.match(/providers:\s*\[/)) {
+			if (!content.includes("provideZonelessChangeDetection(")) {
+				content = content.replace(
+					/providers:\s*\[/,
+					"providers: [\n    provideZonelessChangeDetection(),",
+				);
+			}
+		}
 
 		fs.writeFileSync(appConfigPath, content);
 	}
