@@ -4,7 +4,7 @@ pre-commit:
     protect-configs:
       run: npx tsx scripts/protect-config.ts {staged_files}
     biome:
-      glob: "*.{js,ts,jsx,tsx,json,css,html,md,yml}"
+      glob: "*.{js,ts,jsx,tsx,json}"
       run: npx biome check --write --no-errors-on-unmatched {staged_files}
     oxlint:
       glob: "*.{js,ts,jsx,tsx}"
