@@ -12,12 +12,9 @@ import fs from "fs-extra";
 export function detectWorkspaceRoot(startDir: string) {
 	let currentDir = startDir;
 
-	while (currentDir !== path.parse(currentDir).root) {
-		// Check for Git root
-		if (fs.existsSync(path.join(currentDir, ".git"))) {
-			return { isMonorepo: true, workspaceRoot: currentDir };
-		}
+	let foundGitRoot = "";
 
+	while (currentDir !== path.parse(currentDir).root) {
 		// Check for common PNPM workspaces
 		if (fs.existsSync(path.join(currentDir, "pnpm-workspace.yaml"))) {
 			return { isMonorepo: true, workspaceRoot: currentDir };
@@ -41,10 +38,20 @@ export function detectWorkspaceRoot(startDir: string) {
 			}
 		}
 
+		// Keep track of the first git root we find just in case we need a workspace root fallback
+		if (!foundGitRoot && fs.existsSync(path.join(currentDir, ".git"))) {
+			foundGitRoot = currentDir;
+		}
+
 		currentDir = path.dirname(currentDir);
 	}
 
-	// If we reach the root of the filesystem without finding anything,
+	// If we reach the root of the filesystem without finding a monorepo indicator:
+	// If we found a git root, that's our workspace root, but it's not a monorepo.
+	if (foundGitRoot) {
+		return { isMonorepo: false, workspaceRoot: foundGitRoot };
+	}
+
 	// assume it is NOT a monorepo and the start directory is the root.
 	// However, if the startDir itself contains the indicators after generation,
 	// it's a standalone project.
