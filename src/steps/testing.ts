@@ -1,8 +1,12 @@
+import path from "node:path";
 import chalk from "chalk";
 import fs from "fs-extra";
-import path from "path";
 
-export async function setupTesting(projectPath, workspaceRoot, isMonorepo) {
+export async function setupTesting(
+	projectPath: string,
+	workspaceRoot: string,
+	isMonorepo: boolean,
+) {
 	console.log(
 		chalk.green(
 			"\n🧪 [Step 5] Configuring Testing Tooling (Vitest & Playwright)...",

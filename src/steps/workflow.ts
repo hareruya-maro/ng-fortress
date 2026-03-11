@@ -1,12 +1,12 @@
+import { execSync } from "node:child_process";
+import path from "node:path";
 import chalk from "chalk";
-import { execSync } from "child_process";
 import fs from "fs-extra";
-import path from "path";
 
 export async function setupWorkflowAndHooks(
-	projectPath,
-	workspaceRoot,
-	isMonorepo,
+	projectPath: string,
+	workspaceRoot: string,
+	isMonorepo: boolean,
 ) {
 	console.log(
 		chalk.green(
@@ -33,7 +33,7 @@ export async function setupWorkflowAndHooks(
 		// Install lefthook & taplo globally in monorepo
 		Object.assign(pkg.devDependencies, {
 			lefthook: "^2.1.3",
-			"@taplo/cli": "^0.7.0"
+			"@taplo/cli": "^0.7.0",
 		});
 		// Install linters to specific project
 		projPkg.devDependencies = projPkg.devDependencies || {};
@@ -42,7 +42,7 @@ export async function setupWorkflowAndHooks(
 		Object.assign(pkg.devDependencies, {
 			lefthook: "^2.1.3",
 			"@taplo/cli": "^0.7.0",
-			...commonDevDeps
+			...commonDevDeps,
 		});
 	}
 
@@ -76,9 +76,15 @@ export async function setupWorkflowAndHooks(
 	// Write Lefthook config dynamically
 	const lefthookPath = path.join(workspaceRoot, "lefthook.yml");
 	const appName = path.basename(projectPath);
-	const relDir = isMonorepo ? path.relative(workspaceRoot, projectPath).replace(/\\/g, "/") : ".";
+	const relDir = isMonorepo
+		? path.relative(workspaceRoot, projectPath).replace(/\\/g, "/")
+		: ".";
 
-	function getLefthookCommands(appName, relDir, isMonorepo) {
+	function getLefthookCommands(
+		appName: string,
+		relDir: string,
+		isMonorepo: boolean,
+	) {
 		if (isMonorepo) {
 			return `    protect-configs-${appName}:
       glob: "${relDir}/**/*.{json,js,yml,cjs,mjs}"
@@ -101,33 +107,50 @@ export async function setupWorkflowAndHooks(
 		}
 	}
 
-	function appendLefthook(content, appName, relDir, isMonorepo) {
+	function appendLefthook(
+		content: string,
+		appName: string,
+		relDir: string,
+		isMonorepo: boolean,
+	) {
 		const generatedCommands = getLefthookCommands(appName, relDir, isMonorepo);
-		const lines = content.split('\n');
+		const lines = content.split("\n");
 		let inPreCommit = false;
 		let commandsIndex = -1;
 
 		for (let i = 0; i < lines.length; i++) {
-			if (lines[i].startsWith('pre-commit:')) {
+			if (lines[i].startsWith("pre-commit:")) {
 				inPreCommit = true;
-			} else if (inPreCommit && lines[i].match(/^  commands:/)) {
+			} else if (inPreCommit && lines[i].match(/^ {2}commands:/)) {
 				commandsIndex = i;
 				break;
-			} else if (inPreCommit && !lines[i].startsWith(' ') && lines[i].trim() !== '') {
+			} else if (
+				inPreCommit &&
+				!lines[i].startsWith(" ") &&
+				lines[i].trim() !== ""
+			) {
 				inPreCommit = false;
 			}
 		}
 
 		if (commandsIndex !== -1) {
 			lines.splice(commandsIndex + 1, 0, generatedCommands);
-			return lines.join('\n');
+			return lines.join("\n");
 		} else {
-			if (content.includes('pre-commit:')) {
-				return content.replace('pre-commit:', 'pre-commit:\n  commands:\n' + generatedCommands);
+			if (content.includes("pre-commit:")) {
+				return content.replace(
+					"pre-commit:",
+					`pre-commit:\n  commands:\n${generatedCommands}`,
+				);
 			} else {
 				let finalStr = content.trim();
-				if (finalStr) finalStr += '\n\n';
-				return finalStr + `pre-commit:\n  parallel: true\n  commands:\n` + generatedCommands + '\n';
+				if (finalStr) finalStr += "\n\n";
+				return (
+					finalStr +
+					`pre-commit:\n  parallel: true\n  commands:\n` +
+					generatedCommands +
+					"\n"
+				);
 			}
 		}
 	}

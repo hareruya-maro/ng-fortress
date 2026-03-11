@@ -1,13 +1,13 @@
+import path from "node:path";
 import chalk from "chalk";
 import fs from "fs-extra";
-import path from "path";
 
 export async function setupLinter(
-	projectPath,
-	stylingChoice,
-	workspaceRoot,
-	isMonorepo,
-	useSSR,
+	projectPath: string,
+	stylingChoice: string,
+	workspaceRoot: string,
+	isMonorepo: boolean,
+	useSSR: boolean,
 ) {
 	console.log(
 		chalk.green(

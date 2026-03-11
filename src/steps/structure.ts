@@ -1,20 +1,24 @@
+import path from "node:path";
 import chalk from "chalk";
 import fs from "fs-extra";
-import path from "path";
 
 export async function setupDirStructureAndAgents(
-	projectPath,
-	workspaceRoot,
-	isMonorepo,
-	useSSR,
-	isMigrate = false
+	projectPath: string,
+	workspaceRoot: string,
+	_isMonorepo: boolean,
+	useSSR: boolean,
+	isMigrate = false,
 ) {
 	console.log(
 		chalk.green("\n🛡️ [Step 3] Enforcing NG Fortress Structural Isolation..."),
 	);
 
 	if (isMigrate) {
-		console.log(chalk.yellow("   Skipping destructive component generation for existing application."));
+		console.log(
+			chalk.yellow(
+				"   Skipping destructive component generation for existing application.",
+			),
+		);
 	}
 
 	// 1. Create rigid directory structure

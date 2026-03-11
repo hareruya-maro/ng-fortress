@@ -1,5 +1,5 @@
+import path from "node:path";
 import fs from "fs-extra";
-import path from "path";
 
 /**
  * Traverses up from the given directory to find the root of a workspace/monorepo.
@@ -9,7 +9,7 @@ import path from "path";
  * @param {string} startDir The directory to start searching from (e.g., projectPath)
  * @returns {{ isMonorepo: boolean, workspaceRoot: string }} Object containing monorepo status and the root path.
  */
-export function detectWorkspaceRoot(startDir) {
+export function detectWorkspaceRoot(startDir: string) {
 	let currentDir = startDir;
 
 	while (currentDir !== path.parse(currentDir).root) {

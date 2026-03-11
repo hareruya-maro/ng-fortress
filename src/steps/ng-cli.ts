@@ -1,12 +1,12 @@
+import { execSync } from "node:child_process";
 import chalk from "chalk";
-import { execSync } from "child_process";
 
 export async function initializeAngularProject(
-	projectName,
-	projectPath,
-	workspaceRoot,
-	isMonorepo,
-	useSSR,
+	projectName: string,
+	_projectPath: string,
+	_workspaceRoot: string,
+	isMonorepo: boolean,
+	useSSR: boolean,
 ) {
 	console.log(
 		chalk.green(`\n🚀 [Step 1] Creating Angular Project: ${projectName}...`),

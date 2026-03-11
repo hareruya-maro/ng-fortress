@@ -1,75 +1,81 @@
 {
-  "name": "create-ng-fortress",
-  "version": "1.0.0",
-  "description": "An AI-Native, Zero-Tolerance Strict Web Framework CLI for Angular.",
-  "main": "bin/create-ng-fortress.js",
-  "bin": {
-    "create-ng-fortress": "./bin/create-ng-fortress.js"
-  },
-  "type": "module",
-  "scripts": {
-    "start": "node ./bin/create-ng-fortress.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "lefthook install",
-    "lint": "oxlint && eslint ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hareruya-maro/ng-fortress.git"
-  },
-  "keywords": [
-    "angular",
-    "cli",
-    "create-ng-fortress",
-    "zoneless",
-    "ai-native",
-    "strict",
-    "framework"
-  ],
-  "author": "hareruya-maro",
-  "license": "MIT",
-  "files": [
-    "bin",
-    "src"
-  ],
-  "bugs": {
-    "url": "https://github.com/hareruya-maro/ng-fortress/issues"
-  },
-  "homepage": "https://github.com/hareruya-maro/ng-fortress#readme",
-  "dependencies": {
-    "@inquirer/prompts": "^8.3.0",
-    "chalk": "^5.6.2",
-    "commander": "^14.0.3",
-    "fs-extra": "^11.3.3",
-    "ora": "^9.3.0"
-  },
-  "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.10.0",
-    "@angular-eslint/eslint-plugin": "^19.0.0",
-    "@angular-eslint/eslint-plugin-template": "^19.0.0",
-    "@angular-eslint/template-parser": "^19.0.0",
-    "@angular/platform-browser-dynamic": "^21.0.0",
-    "@biomejs/biome": "^2.4.6",
-    "@playwright/test": "^1.40.0",
-    "@taplo/cli": "^0.7.0",
-    "@vitest/coverage-v8": "^4.0.0",
-    "autoprefixer": "^10.4.0",
-    "eslint": "^9.0.0",
-    "eslint-plugin-boundaries": "^5.0.0",
-    "eslint-plugin-functional": "^7.0.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-local-rules": "^3.0.2",
-    "husky": "^9.0.0",
-    "jsdom": "^24.0.0",
-    "lefthook": "^2.1.3",
-    "lint-staged": "^15.0.0",
-    "oxlint": "^1.52.0",
-    "postcss": "^8.4.0",
-    "stylelint": "^16.0.0",
-    "stylelint-config-standard": "^36.0.0",
-    "tailwindcss": "^3.4.0",
-    "typescript-eslint": "^8.0.0",
-    "vitest": "^4.0.0",
-    "zone.js": "~0.15.0"
-  }
+	"name": "create-ng-fortress",
+	"version": "1.0.0",
+	"description": "An AI-Native, Zero-Tolerance Strict Web Framework CLI for Angular.",
+	"main": "dist/bin/create-ng-fortress.js",
+	"bin": {
+		"create-ng-fortress": "./dist/bin/create-ng-fortress.js"
+	},
+	"type": "module",
+	"scripts": {
+		"build": "tsup bin/create-ng-fortress.ts src/index.ts --format esm --clean",
+		"dev": "tsup bin/create-ng-fortress.ts src/index.ts --format esm --watch",
+		"start": "node ./dist/bin/create-ng-fortress.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"prepare": "lefthook install",
+		"lint": "oxlint && eslint ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hareruya-maro/ng-fortress.git"
+	},
+	"keywords": [
+		"angular",
+		"cli",
+		"create-ng-fortress",
+		"zoneless",
+		"ai-native",
+		"strict",
+		"framework"
+	],
+	"author": "hareruya-maro",
+	"license": "MIT",
+	"files": [
+		"dist"
+	],
+	"bugs": {
+		"url": "https://github.com/hareruya-maro/ng-fortress/issues"
+	},
+	"homepage": "https://github.com/hareruya-maro/ng-fortress#readme",
+	"dependencies": {
+		"@inquirer/prompts": "^8.3.0",
+		"chalk": "^5.6.2",
+		"commander": "^14.0.3",
+		"fs-extra": "^11.3.3",
+		"ora": "^9.3.0"
+	},
+	"devDependencies": {
+		"@analogjs/vite-plugin-angular": "^1.10.0",
+		"@angular-eslint/eslint-plugin": "^19.0.0",
+		"@angular-eslint/eslint-plugin-template": "^19.0.0",
+		"@angular-eslint/template-parser": "^19.0.0",
+		"@angular/platform-browser-dynamic": "^21.0.0",
+		"@biomejs/biome": "^2.4.6",
+		"@playwright/test": "^1.40.0",
+		"@taplo/cli": "^0.7.0",
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^25.4.0",
+		"@vitest/coverage-v8": "^4.0.0",
+		"autoprefixer": "^10.4.0",
+		"eslint": "^9.0.0",
+		"eslint-plugin-boundaries": "^5.0.0",
+		"eslint-plugin-functional": "^7.0.0",
+		"eslint-plugin-import": "^2.31.0",
+		"eslint-plugin-local-rules": "^3.0.2",
+		"husky": "^9.0.0",
+		"jsdom": "^24.0.0",
+		"lefthook": "^2.1.3",
+		"lint-staged": "^15.0.0",
+		"oxlint": "^1.52.0",
+		"postcss": "^8.4.0",
+		"stylelint": "^16.0.0",
+		"stylelint-config-standard": "^36.0.0",
+		"tailwindcss": "^3.4.0",
+		"tsup": "^8.5.1",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.0.0",
+		"vitest": "^4.0.0",
+		"zone.js": "~0.15.0"
+	}
 }
