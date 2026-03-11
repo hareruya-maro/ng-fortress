@@ -14,7 +14,17 @@ Create a new NG Fortress application using `npx`:
 npx create-ng-fortress my-app
 ```
 
-You will be prompted to select a styling constraint strategy (e.g., Tailwind CSS, Strict Scoped CSS). 
+You will be prompted to select a styling constraint strategy (e.g., Tailwind CSS, Strict Scoped CSS).
+
+### Migrating Existing Applications
+
+You can also apply NG Fortress's strict linters, pre-commit hooks, and CI/CD workflow testing tools to an *existing* Angular application without destroying its source components:
+
+```bash
+npx create-ng-fortress --migrate
+```
+
+If you are inside a monorepo, it will automatically find all Angular apps in your workspace and let you select which one to migrate.
 
 ---
 
