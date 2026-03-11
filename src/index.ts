@@ -186,6 +186,7 @@ async function main() {
 			workspaceRoot,
 			isMonorepo,
 			useSSR,
+			isMigrate,
 		);
 		await setupLinter(
 			projectPath,
