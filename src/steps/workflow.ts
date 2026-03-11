@@ -350,14 +350,6 @@ console.log('✅ Pre-build Validation Passed');
 			stdio: "inherit",
 		});
 
-		if (isMonorepo) {
-			// Also install in projectPath to get the newly added eslint local rules etc.
-			execSync("npm install --legacy-peer-deps", {
-				cwd: projectPath,
-				stdio: "inherit",
-			});
-		}
-
 		// Setup git and hooks
 		if (!fs.existsSync(path.join(workspaceRoot, ".git"))) {
 			execSync("git init", { cwd: workspaceRoot, stdio: "ignore" });
