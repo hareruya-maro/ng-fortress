@@ -138,6 +138,11 @@ async function main() {
 		workspaceRoot = projectPath;
 	}
 
+	if (!projectPath) {
+		console.error(chalk.red("Error: Project path could not be determined."));
+		process.exit(1);
+	}
+
 	const stylingChoice = await select({
 		message: "Select the styling constraint strategy:",
 		choices: [
