@@ -7,8 +7,16 @@ const PROTECTED = ["eslint.config.js", "biome.json", "lefthook.yml"];
 const pkgContext = fs.existsSync("package.json")
 	? fs.readFileSync("package.json", "utf8")
 	: "";
-const isCliRepo = pkgContext.includes('"name": "create-ng-fortress"');
+let isCliRepo = false;
 
+if (pkgContext) {
+	try {
+		const pkgJson = JSON.parse(pkgContext) as { name?: string };
+		isCliRepo = pkgJson.name === "create-ng-fortress";
+	} catch {
+		// ignore JSON parse errors and treat as non-CLI repo
+	}
+}
 if (isCliRepo) {
 	console.log(
 		"ℹ️ Running inside create-ng-fortress repository. Allowing config file modifications.",
