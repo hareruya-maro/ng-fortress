@@ -50,10 +50,12 @@ export async function setupWorkflowAndHooks(
 	pkg.scripts.prepare = "lefthook install";
 
 	if (!isMonorepo) {
-		pkg.scripts.lint = "oxlint && eslint .";
+		pkg.scripts.lint =
+			"npx biome check --write --no-errors-on-unmatched && oxlint && eslint .";
 	} else {
 		projPkg.scripts = projPkg.scripts || {};
-		projPkg.scripts.lint = "oxlint && eslint .";
+		projPkg.scripts.lint =
+			"npx biome check --write --no-errors-on-unmatched && oxlint && eslint .";
 	}
 
 	// Wire up the pre-build validator for the specific project

@@ -13,7 +13,7 @@
 		"start": "node ./dist/bin/create-ng-fortress.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"prepare": "lefthook install",
-		"lint": "oxlint && eslint ."
+		"lint": "npx biome check --write --no-errors-on-unmatched && oxlint && eslint ."
 	},
 	"repository": {
 		"type": "git",
