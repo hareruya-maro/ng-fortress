@@ -345,7 +345,16 @@ console.log('✅ Pre-build Validation Passed');
 		),
 	);
 	try {
-		execSync("npm install --legacy-peer-deps", {
+		let installCmd = "npm install --legacy-peer-deps";
+		if (fs.existsSync(path.join(workspaceRoot, "pnpm-lock.yaml"))) {
+			installCmd = "pnpm install";
+		} else if (fs.existsSync(path.join(workspaceRoot, "yarn.lock"))) {
+			installCmd = "yarn install";
+		} else if (fs.existsSync(path.join(workspaceRoot, "bun.lockb"))) {
+			installCmd = "bun install";
+		}
+
+		execSync(installCmd, {
 			cwd: workspaceRoot,
 			stdio: "inherit",
 		});
