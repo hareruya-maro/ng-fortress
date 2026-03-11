@@ -17,7 +17,7 @@ export async function setupTesting(
 	const pkg = fs.readJsonSync(pkgPath);
 	pkg.devDependencies = pkg.devDependencies || {};
 
-	Object.assign(pkg.devDependencies, {
+	const testDeps = {
 		vitest: "^4.0.0",
 		"@vitest/coverage-v8": "^4.0.0",
 		"@playwright/test": "^1.40.0",
@@ -25,7 +25,9 @@ export async function setupTesting(
 		"@analogjs/vite-plugin-angular": "^1.10.0",
 		"@angular/platform-browser-dynamic": "^21.0.0",
 		"zone.js": "~0.15.0",
-	});
+	};
+
+	Object.assign(pkg.devDependencies, testDeps);
 
 	pkg.scripts = pkg.scripts || {};
 	if (!isMonorepo) {
@@ -41,6 +43,8 @@ export async function setupTesting(
 		const projPkgPath = path.join(projectPath, "package.json");
 		if (fs.existsSync(projPkgPath)) {
 			const projPkg = fs.readJsonSync(projPkgPath);
+			projPkg.devDependencies = projPkg.devDependencies || {};
+			Object.assign(projPkg.devDependencies, testDeps);
 			projPkg.scripts = projPkg.scripts || {};
 			projPkg.scripts.test =
 				"vitest run --coverage && node scripts/check-coverage.js";
