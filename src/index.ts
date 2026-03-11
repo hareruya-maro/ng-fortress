@@ -72,7 +72,7 @@ async function main() {
 	const cwd = process.cwd();
 	const workspaceInfo = detectWorkspaceRoot(cwd);
 	const isMonorepo = workspaceInfo.isMonorepo;
-	const workspaceRoot = isMonorepo ? workspaceInfo.workspaceRoot : cwd;
+	let workspaceRoot = isMonorepo ? workspaceInfo.workspaceRoot : cwd;
 
 	let projectPath: string | undefined;
 
@@ -132,6 +132,10 @@ async function main() {
 			projectName = await input({ message: "Enter project name:" });
 		}
 		projectPath = path.join(cwd, projectName);
+	}
+
+	if (!isMonorepo && projectPath) {
+		workspaceRoot = projectPath;
 	}
 
 	const stylingChoice = await select({
