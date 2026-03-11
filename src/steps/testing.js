@@ -1,32 +1,52 @@
-import fs from 'fs-extra';
-import path from 'path';
-import chalk from 'chalk';
+import chalk from "chalk";
+import fs from "fs-extra";
+import path from "path";
 
-export async function setupTesting(projectPath) {
-  console.log(chalk.green('\n🧪 [Step 5] Configuring Testing Tooling (Vitest & Playwright)...'));
+export async function setupTesting(projectPath, workspaceRoot, isMonorepo) {
+	console.log(
+		chalk.green(
+			"\n🧪 [Step 5] Configuring Testing Tooling (Vitest & Playwright)...",
+		),
+	);
 
-  const pkgPath = path.join(projectPath, 'package.json');
-  const pkg = fs.readJsonSync(pkgPath);
-  pkg.devDependencies = pkg.devDependencies || {};
+	const pkgPath = path.join(workspaceRoot, "package.json");
+	const pkg = fs.readJsonSync(pkgPath);
+	pkg.devDependencies = pkg.devDependencies || {};
 
-  Object.assign(pkg.devDependencies, {
-    "vitest": "^4.0.0",
-    "@vitest/coverage-v8": "^4.0.0",
-    "@playwright/test": "^1.40.0",
-    "jsdom": "^24.0.0",
-    "@analogjs/vite-plugin-angular": "^1.10.0",
-    "@angular/platform-browser-dynamic": "^21.0.0",
-    "zone.js": "~0.15.0"
-  });
+	Object.assign(pkg.devDependencies, {
+		vitest: "^4.0.0",
+		"@vitest/coverage-v8": "^4.0.0",
+		"@playwright/test": "^1.40.0",
+		jsdom: "^24.0.0",
+		"@analogjs/vite-plugin-angular": "^1.10.0",
+		"@angular/platform-browser-dynamic": "^21.0.0",
+		"zone.js": "~0.15.0",
+	});
 
-  pkg.scripts = pkg.scripts || {};
-  pkg.scripts.test = "vitest run --coverage && node scripts/check-coverage.js";
-  pkg.scripts["test:watch"] = "vitest";
-  pkg.scripts.e2e = "playwright test";
+	pkg.scripts = pkg.scripts || {};
+	if (!isMonorepo) {
+		pkg.scripts.test =
+			"vitest run --coverage && node scripts/check-coverage.js";
+		pkg.scripts["test:watch"] = "vitest";
+		pkg.scripts.e2e = "playwright test";
+	}
 
-  fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
+	fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
 
-  const vitestConfig = `import { defineConfig } from 'vitest/config';
+	if (isMonorepo) {
+		const projPkgPath = path.join(projectPath, "package.json");
+		if (fs.existsSync(projPkgPath)) {
+			const projPkg = fs.readJsonSync(projPkgPath);
+			projPkg.scripts = projPkg.scripts || {};
+			projPkg.scripts.test =
+				"vitest run --coverage && node scripts/check-coverage.js";
+			projPkg.scripts["test:watch"] = "vitest";
+			projPkg.scripts.e2e = "playwright test";
+			fs.writeJsonSync(projPkgPath, projPkg, { spaces: 2 });
+		}
+	}
+
+	const vitestConfig = `import { defineConfig } from 'vitest/config';
 import angular from '@analogjs/vite-plugin-angular';
 
 export default defineConfig({
@@ -49,9 +69,9 @@ export default defineConfig({
   }
 });
 `;
-  fs.writeFileSync(path.join(projectPath, 'vitest.config.ts'), vitestConfig);
+	fs.writeFileSync(path.join(projectPath, "vitest.config.ts"), vitestConfig);
 
-  const playwrightConfig = `import { defineConfig, devices } from '@playwright/test';
+	const playwrightConfig = `import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
@@ -66,20 +86,23 @@ export default defineConfig({
   ],
 });
 `;
-  fs.writeFileSync(path.join(projectPath, 'playwright.config.ts'), playwrightConfig);
+	fs.writeFileSync(
+		path.join(projectPath, "playwright.config.ts"),
+		playwrightConfig,
+	);
 
-  fs.ensureDirSync(path.join(projectPath, 'e2e'));
+	fs.ensureDirSync(path.join(projectPath, "e2e"));
 
-  const sampleE2e = `import { test, expect } from '@playwright/test';
+	const sampleE2e = `import { test, expect } from '@playwright/test';
 
 test('app should load without errors', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/.*Fortress.*/i);
 });
 `;
-  fs.writeFileSync(path.join(projectPath, 'e2e', 'app.spec.ts'), sampleE2e);
+	fs.writeFileSync(path.join(projectPath, "e2e", "app.spec.ts"), sampleE2e);
 
-  const testSetupContent = `import '@analogjs/vite-plugin-angular/setup-vitest';
+	const testSetupContent = `import '@analogjs/vite-plugin-angular/setup-vitest';
 import { getTestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
@@ -87,23 +110,32 @@ getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDyn
   teardown: { destroyAfterEach: true }
 });
 `;
-  fs.writeFileSync(path.join(projectPath, 'src', 'test-setup.ts'), testSetupContent);
+	fs.writeFileSync(
+		path.join(projectPath, "src", "test-setup.ts"),
+		testSetupContent,
+	);
 
-  const tsconfigSpecPath = path.join(projectPath, 'tsconfig.spec.json');
-  if (fs.existsSync(tsconfigSpecPath)) {
-    let tsconfigSpec = fs.readFileSync(tsconfigSpecPath, 'utf8');
-    if (!tsconfigSpec.includes('"src/test-setup.ts"')) {
-      tsconfigSpec = tsconfigSpec.replace(/"include":\s*\[/, '"files": ["src/test-setup.ts"],\n  "include": [');
-    }
-    if (!tsconfigSpec.includes('"vitest"')) {
-      tsconfigSpec = tsconfigSpec.replace(/"types":\s*\[/, '"types": [\n      "vitest/globals",\n      "vitest",');
-    }
-    fs.writeFileSync(tsconfigSpecPath, tsconfigSpec);
-  }
+	const tsconfigSpecPath = path.join(projectPath, "tsconfig.spec.json");
+	if (fs.existsSync(tsconfigSpecPath)) {
+		let tsconfigSpec = fs.readFileSync(tsconfigSpecPath, "utf8");
+		if (!tsconfigSpec.includes('"src/test-setup.ts"')) {
+			tsconfigSpec = tsconfigSpec.replace(
+				/"include":\s*\[/,
+				'"files": ["src/test-setup.ts"],\n  "include": [',
+			);
+		}
+		if (!tsconfigSpec.includes('"vitest"')) {
+			tsconfigSpec = tsconfigSpec.replace(
+				/"types":\s*\[/,
+				'"types": [\n      "vitest/globals",\n      "vitest",',
+			);
+		}
+		fs.writeFileSync(tsconfigSpecPath, tsconfigSpec);
+	}
 
-  // Create check-coverage.js script for warnings if coverage < 90%
-  fs.ensureDirSync(path.join(projectPath, 'scripts'));
-  const checkCoverageScript = `import fs from 'fs';
+	// Create check-coverage.js script for warnings if coverage < 90%
+	fs.ensureDirSync(path.join(projectPath, "scripts"));
+	const checkCoverageScript = `import fs from 'fs';
   import path from 'path';
 
   const summaryPath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
@@ -130,5 +162,8 @@ getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDyn
     console.warn('⚠️  Warning: coverage-summary.json not found. Run tests with coverage enabled.');
 }
 `;
-  fs.writeFileSync(path.join(projectPath, 'scripts', 'check-coverage.js'), checkCoverageScript);
+	fs.writeFileSync(
+		path.join(projectPath, "scripts", "check-coverage.js"),
+		checkCoverageScript,
+	);
 }
