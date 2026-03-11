@@ -115,6 +115,15 @@ async function main() {
 			}
 		}
 
+		if (!projectPath) {
+			console.error(
+				chalk.red(
+					"Error: Project path could not be determined for migration.",
+				),
+			);
+			process.exit(1);
+		}
+
 		if (
 			!fs.existsSync(path.join(projectPath, "angular.json")) &&
 			!fs.existsSync(path.join(projectPath, "project.json"))
@@ -134,13 +143,13 @@ async function main() {
 		projectPath = path.join(cwd, projectName);
 	}
 
-	if (!isMonorepo && projectPath) {
-		workspaceRoot = projectPath;
-	}
-
 	if (!projectPath) {
 		console.error(chalk.red("Error: Project path could not be determined."));
 		process.exit(1);
+	}
+
+	if (!isMonorepo) {
+		workspaceRoot = projectPath;
 	}
 
 	const stylingChoice = await select({
