@@ -71,6 +71,18 @@ export async function setupWorkflowAndHooks(
 
 	if (isMonorepo) {
 		fs.writeJsonSync(pkgPath, pkg, { spaces: 2 }); // Save root pkg if monorepo
+	} else {
+		// In a single project, pkg and projPkg are the same file, but we modified 'pkg'
+		// before we read 'projPkg', or we modified 'pkg' instead of 'projPkg' for some fields.
+		// Since we already wrote projPkg, and projPkg is the same path as pkgPath,
+		// we should actually just write `pkg` to `pkgPath` since it contains the
+		// `devDependencies` and `scripts` prep that were added to `pkg`.
+		// Actually, since `projPkgPath === pkgPath` when `!isMonorepo`,
+		// let's just make sure both get saved or we merge them.
+		// To be perfectly safe, since we added `lint` and `prepare` and `devDependencies` to `pkg`,
+		// and added `build` to `projPkg`, let's merge them in non-monorepo.
+		Object.assign(pkg.scripts, projPkg.scripts);
+		fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
 	}
 
 	// Write Lefthook config dynamically
