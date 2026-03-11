@@ -211,7 +211,7 @@ export async function setupWorkflowAndHooks(
 	fs.writeFileSync(path.join(configDestDir, "biome.json"), biomerc);
 
 	// Write Custom ESLint Local Rule into configDestDir
-	const eslintLocalRules = `// eslint-local-rules.cjs
+	const eslintLocalRules = `// eslint-local-rules.js
 module.exports = {
   'no-agent-eval': {
     meta: {
@@ -247,7 +247,7 @@ module.exports = {
 };
 `;
 	fs.writeFileSync(
-		path.join(configDestDir, "eslint-local-rules.cjs"),
+		path.join(configDestDir, "eslint-local-rules.js"),
 		eslintLocalRules,
 	);
 
