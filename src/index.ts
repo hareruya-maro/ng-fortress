@@ -117,9 +117,7 @@ async function main() {
 
 		if (!projectPath) {
 			console.error(
-				chalk.red(
-					"Error: Project path could not be determined for migration.",
-				),
+				chalk.red("Error: Project path could not be determined for migration."),
 			);
 			process.exit(1);
 		}
