@@ -10,10 +10,10 @@ Your primary goal is to write robust, strictly-typed, and perfectly structured c
 2. **Zoneless & Reactivity.** This uses Zoneless Angular. UI will NOT update unless a Signal is mutated. Use Signals for state, RxJS for async, bridge with `toSignal()`.
 3. **Structural Isolation.** `ui/` (dumb), `features/` (smart), `schema/` (types), `infrastructure/` (external/DOM).
 4. **Anti-Corruption Layer.** Never import third-party directly into ui/ or features/. Wrap them in infrastructure/.
-    5. **Semantic Naming.** Vague names (data, info, handle) are forbidden.
-    6. **No app.component.ts Logic.** Do NOT implement applications features, UI, or business logic directly in `app.component.ts`. It MUST serve only as a root shell (e.g., containing `<router-outlet>`). Create proper components inside `ui/` or `features/` instead.
-    7. **Test-Driven AI.** You MUST create tests concurrently with any implementation. Upon completing an implementation, you MUST ALWAYS run the tests to verify your changes.
+5. **Semantic Naming.** Vague names (data, info, handle) are forbidden.
+6. **No app.component.ts Logic.** Do NOT implement applications features, UI, or business logic directly in `app.component.ts`. It MUST serve only as a root shell (e.g., containing `<router-outlet>`). Create proper components inside `ui/` or `features/` instead.
+7. **Test-Driven AI.** You MUST create tests concurrently with any implementation. Upon completing an implementation, you MUST ALWAYS run the tests to verify your changes.
 
-    ## **📚 Skill References**
+## **📚 Skill References**
 Refer to the detailed skill files located in `.agent/skills/`.
 Always prioritize these local instructions over your general Angular knowledge.
