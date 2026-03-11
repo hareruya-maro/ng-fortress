@@ -10,7 +10,7 @@ export async function setupWorkflowAndHooks(
 ) {
 	console.log(
 		chalk.green(
-			"\n⛓️ [Step 6] Enforcing Workflow (Husky, lint-staged, Pre-build validation)...",
+			"\n⛓️ [Step 6] Enforcing Workflow (Lefthook, Biome, Oxlint, Pre-build validation)...",
 		),
 	);
 
