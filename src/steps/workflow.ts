@@ -91,7 +91,7 @@ export async function setupWorkflowAndHooks(
       run: node ${relDir}/scripts/protect-config.js {staged_files}
     biome-${appName}:
       glob: "${relDir}/**/*.{js,ts,jsx,tsx,json,css,html}"
-      run: npx biome check --config-path=${relDir} --write --no-errors-on-unmatched {staged_files}
+      run: npx biome check --config-path=${relDir}/biome.json --write --no-errors-on-unmatched {staged_files}
     oxlint-${appName}:
       glob: "${relDir}/**/*.{js,ts,jsx,tsx}"
       run: npx oxlint {staged_files}`;
