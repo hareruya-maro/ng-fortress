@@ -64,7 +64,7 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet],
-  template: \`<router-outlet></router-outlet>\`
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'NG Fortress';
@@ -73,6 +73,12 @@ export class AppComponent {
 		fs.writeFileSync(
 			path.join(appDir, "app.component.ts"),
 			strictAppComponentContent,
+		);
+
+		const strictAppHtmlContent = `<router-outlet></router-outlet>\n`;
+		fs.writeFileSync(
+			path.join(appDir, "app.component.html"),
+			strictAppHtmlContent,
 		);
 
 		const strictAppSpecContent = `import { TestBed } from '@angular/core/testing';
