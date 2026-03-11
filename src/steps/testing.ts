@@ -101,7 +101,7 @@ export default defineConfig({
 
 test('app should load without errors', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle(/.*Fortress.*/i);
+  await expect(page.locator('app-root')).toBeVisible();
 });
 `;
 	fs.writeFileSync(path.join(projectPath, "e2e", "app.spec.ts"), sampleE2e);
