@@ -7,6 +7,9 @@
 		"create-ng-fortress": "./dist/bin/create-ng-fortress.js"
 	},
 	"type": "module",
+	"engines": {
+		"node": ">=24"
+	},
 	"scripts": {
 		"build": "tsup bin/create-ng-fortress.ts src/index.ts --format esm --clean",
 		"dev": "tsup bin/create-ng-fortress.ts src/index.ts --format esm --watch",
