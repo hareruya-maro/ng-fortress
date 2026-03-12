@@ -1,6 +1,6 @@
 {
 	"name": "create-ng-fortress",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "An AI-Native, Zero-Tolerance Strict Web Framework CLI for Angular.",
 	"main": "dist/bin/create-ng-fortress.js",
 	"bin": {
