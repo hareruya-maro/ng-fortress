@@ -47,6 +47,21 @@ If you are inside a monorepo, it will automatically find all Angular apps in you
 
 Standard frameworks afford too much freedom—which causes AIs to hallucinate varying architectural styles across different files. **NG Fortress removes choice.** By strictly enforcing one way to govern state, one way to organize files, and one way to name properties, AI agents write consistent, bulletproof code every single time.
 
+## ⚙️ Development Setup
+
+### Node.js バージョン管理ツールを使っている場合
+
+[mise](https://mise.jdx.dev/) や [volta](https://volta.sh/) 等のバージョン管理ツールを使っている場合、Git hook（lefthook）の実行時に `npx` / `node` が見つからないことがあります。プロジェクトルートに `.lefthookrc` を作成して PATH を通してください：
+
+```bash
+# .lefthookrc (mise の場合)
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+```
+
+> **Note**: `.lefthookrc` は `.gitignore` に含まれているため、各開発者がローカルで作成する必要があります。
+
+---
+
 ## 🤝 Contributing & License
 
 Contributions, issues, and feature requests are welcome! 

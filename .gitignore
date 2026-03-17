@@ -26,5 +26,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Lefthook local env config
+.lefthookrc
+
 /docs/
 /works
