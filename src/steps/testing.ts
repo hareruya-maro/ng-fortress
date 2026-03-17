@@ -18,8 +18,8 @@ export async function setupTesting(
 	pkg.devDependencies = pkg.devDependencies || {};
 
 	const testDeps = {
-		vitest: "^4.0.0",
-		"@vitest/coverage-v8": "^4.0.0",
+		vitest: "^4.1.0",
+		"@vitest/coverage-v8": "^4.1.0",
 		"@playwright/test": "^1.40.0",
 		jsdom: "^24.0.0",
 		"@analogjs/vite-plugin-angular": "^1.10.0",
@@ -63,7 +63,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['src/test-setup.ts'],
-    include: ['src/**/*.spec.ts'],
+    include: ['src/**/*.spec.ts', 'src/app/**/*.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary'],
