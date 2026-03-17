@@ -75,7 +75,35 @@ import angularTemplateParser from '@angular-eslint/template-parser';
 import boundaries from 'eslint-plugin-boundaries';
 import importPlugin from 'eslint-plugin-import';
 import functional from 'eslint-plugin-functional';
-import localRules from 'eslint-plugin-local-rules';
+
+// NG Fortress custom rules (inline plugin - no external file dependency)
+const ngFortressPlugin = {
+  rules: {
+    'no-agent-eval': {
+      meta: {
+        type: 'problem',
+        docs: { description: 'Disallow eval() and new Function() to prevent agent vulnerabilities' },
+        messages: {
+          noEval: 'ERROR: eval() や new Function() の使用は禁止されています。 WHY: AIエージェントが任意コード実行の脆弱性を埋め込むリスクを防ぐためです。 FIX: JSON.parse() などの安全な代替手段を使用してください。'
+        }
+      },
+      create(context) {
+        return {
+          CallExpression(node) {
+            if (node.callee.type === 'Identifier' && node.callee.name === 'eval') {
+              context.report({ node, messageId: 'noEval' });
+            }
+          },
+          NewExpression(node) {
+            if (node.callee.type === 'Identifier' && node.callee.name === 'Function') {
+              context.report({ node, messageId: 'noEval' });
+            }
+          }
+        };
+      }
+    }
+  }
+};
 
 export default tseslint.config(
   {
@@ -99,7 +127,7 @@ export default tseslint.config(
       'boundaries': boundaries,
       'import': importPlugin,
       'functional': functional,
-      'local-rules': localRules
+      'ng-fortress': ngFortressPlugin
     },
     settings: {
       'boundaries/elements': [
@@ -156,7 +184,7 @@ export default tseslint.config(
     // Functional strictness
     'prefer-const': 'error',
       'functional/no-let': 'error', // No let used for state
-        'local-rules/no-agent-eval': 'error', // Ban eval() and new Function()
+        'ng-fortress/no-agent-eval': 'error', // Ban eval() and new Function()
           // Third-party imports ban in ui/features
           'no-restricted-imports': ['error', {
             patterns: [

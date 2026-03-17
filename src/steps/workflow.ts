@@ -21,7 +21,6 @@ export async function setupWorkflowAndHooks(
 	const commonDevDeps = {
 		"@biomejs/biome": "^2.4.6",
 		oxlint: "^1.52.0",
-		"eslint-plugin-local-rules": "^3.0.2",
 	};
 
 	const projPkgPath = isMonorepo
@@ -213,47 +212,6 @@ export async function setupWorkflowAndHooks(
 }`;
 	fs.writeFileSync(path.join(configDestDir, "biome.json"), biomerc);
 
-	// Write Custom ESLint Local Rule into configDestDir
-	const eslintLocalRules = `// eslint-local-rules.js
-module.exports = {
-  'no-agent-eval': {
-    meta: {
-      type: 'problem',
-      docs: {
-        description: 'Disallow eval() and new Function() strictly to prevent Agent vulnerabilities',
-      },
-      messages: {
-        noEval: 'ERROR: eval() や new Function() の使用は禁止されています。 WHY: AIエージェントが任意コード実行の脆弱性を埋め込むリスクを防ぐためです。 FIX: 評価やパースが必要な場合は、JSON.parse() などの安全な代替手段を使用してください。 EXAMPLE: // Bad: eval(data); // Good: JSON.parse(data);'
-      }
-    },
-    create(context) {
-      return {
-        CallExpression(node) {
-          if (node.callee.type === 'Identifier' && node.callee.name === 'eval') {
-            context.report({
-              node,
-              messageId: 'noEval'
-            });
-          }
-        },
-        NewExpression(node) {
-          if (node.callee.type === 'Identifier' && node.callee.name === 'Function') {
-            context.report({
-              node,
-              messageId: 'noEval'
-            });
-          }
-        }
-      };
-    }
-  }
-};
-`;
-	fs.writeFileSync(
-		path.join(configDestDir, "eslint-local-rules.js"),
-		eslintLocalRules,
-	);
-
 	// Write scripts/protect-config.js to configDestDir
 	fs.ensureDirSync(path.join(configDestDir, "scripts"));
 	const protectConfigScript = `// scripts/protect-config.js
@@ -295,7 +253,7 @@ console.log('🛡️  NG Fortress Pre-build Validation Started');
 // 1. Check Directory Violations
 const appDir = path.join(process.cwd(), 'src/app');
 if (fs.existsSync(appDir)) {
-    const allowed = ['ui', 'features', 'infrastructure', 'schema', 'app.component.ts', 'app.component.spec.ts', 'app.config.ts', 'app.routes.ts', 'app.config.server.ts', 'app.routes.server.ts'];
+    const allowed = ['ui', 'features', 'infrastructure', 'schema', 'app.component.ts', 'app.component.html', 'app.component.spec.ts', 'app.config.ts', 'app.routes.ts', 'app.config.server.ts', 'app.routes.server.ts'];
     const items = fs.readdirSync(appDir);
     items.forEach(item => {
         if (!allowed.includes(item)) {

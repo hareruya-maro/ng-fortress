@@ -12,6 +12,7 @@ if (fs.existsSync(appDir)) {
 		"infrastructure",
 		"schema",
 		"app.component.ts",
+		"app.component.html",
 		"app.component.spec.ts",
 		"app.config.ts",
 		"app.routes.ts",
