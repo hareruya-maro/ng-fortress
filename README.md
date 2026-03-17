@@ -32,11 +32,23 @@ If you are inside a monorepo, it will automatically find all Angular apps in you
 
 - **Zoneless By Default**: Completely removes `zone.js`. All reactivity is formally governed by Angular Signals (`signal`, `computed`, `effect`).
 - **Rigid Physical Boundaries**: Code must reside explicitly within:
-  - `ui/`: Pure presentation components.
-  - `features/`: Smart logic components.
-  - `infrastructure/`: Adapters, DOM interaction, and APIs.
-  - `schema/`: Types and interfaces.
-- **Strict Linting (Zero Tolerance)**: Utilizes Flat Config ESLint and `eslint-plugin-boundaries` to prevent architectural pollution (e.g., importing from `infrastructure` into `ui`).
+  - `ui/`: Pure presentation components (Dumb). No services injected.
+  - `features/`: Smart logic components. Max 20 lines per method.
+  - `infrastructure/`: 
+    - `browser/`: DOM, window, and browser-specific APIs.
+    - `server/`: Node.js specific APIs (for SSR).
+    - `universal/`: Clean, platform-agnostic logic (e.g., HttpClient).
+  - `schema/`: Types, interfaces, and **Injection Tokens** (in `tokens/`) for abstracting infrastructure.
+- **Strict Linting (Zero Tolerance)**: Utilizes Flat Config ESLint and `eslint-plugin-boundaries` to enforce:
+  - **No eval()**: Ban `eval()` and `new Function()` to prevent AI agent vulnerabilities.
+  - **No Globals**: Direct access to `window`, `document`, `localStorage`, etc., is forbidden. Use Injection Tokens.
+  - **Semantic Naming**: Ban vague names like `data`, `info`, `res`, `handle`, `item`.
+  - **Dependency Flow**: Prevents architectural pollution (e.g., importing `infrastructure/browser` into `features`).
+- **Component Strictness**:
+  - `standalone: true` and `ChangeDetectionStrategy.OnPush` are mandatory.
+  - Use Signal-based `input()` and `output()` (Standard `@Input`/@Output decorators are forbidden).
+  - `app.component.ts` is strictly a routing shell (No logic, max 30 lines).
+- **Styling Strategy**: Choose from Utility-First (Tailwind), No-CSS (UI Libraries), or Strict Scoped CSS (BEM via Stylelint).
 - **Build-Time Verification**: Enforces absolute asset size limits, file extension rules, and directory structures before the bundle compiles.
 - **Integrated Agent Contexts**: Automatically generates an `AGENTS.md` and `skills/` directory, ensuring AI coding assistants explicitly understand the architecture's constraints.
 - **Coverage Enforcement**: Pre-configured Vitest + Playwright suite that forcefully rejects commits if code coverage drops below 80%.
